@@ -1,0 +1,12 @@
+body{
+    background-color: rgb(247,255,250);
+    font-family: comfortaa;
+}
+.Post{
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 10px;
+    background-color: white;
+    width:550px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+}
