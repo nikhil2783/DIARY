@@ -14,12 +14,6 @@
         <button class="btn btn-danger w-25" id="logoutBtn">Logout</button>    
       </div>
     <div class="allPost" id="postContainer"></div>
-      <!-- <div class="Post">
-        <h1>First Day at college</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus beatae voluptatem minus iure modi officiis optio alias itaque nobis, magni soluta fuga amet exercitationem quod dolore tempora! Magnam sit pariatur error voluptas aperiam debitis quasi ad tempora, vitae consequatur maxime voluptatibus magni nam distinctio officiis dolorum nobis est, molestias porro ex ipsa quis dolore. Perspiciatis consequuntur sequi incidunt magni excepturi veritatis saepe nostrum, nesciunt est voluptates sit labore et id fugit voluptatum, laudantium, repudiandae dicta?</p>
-        <a class="btn viewButton" href="./dedicatedPage.html">View Post</a>
-      </div>
-    </div> -->
     <script>
       document.getElementById("logoutBtn").addEventListener("click",()=>{
         localStorage.removeItem('userID');
@@ -34,7 +28,7 @@
         const body=new URLSearchParams();
         body.append('userID',userID)
         try{
-          const response=await fetch("http://localhost:3000/feedPost",{
+          const response=await fetch("/feedPost",{
             method:"POST",
             headers:{
               "Content-Type":"application/x-www-form-urlencoded"
@@ -82,7 +76,7 @@
               const deleteBody=new URLSearchParams()
               deleteBody.append("postID",id)
               
-              const delRes=await fetch("http://localhost:3000/deletePost",{
+              const delRes=await fetch("/deletePost",{
                 method:"POST",
                 headers:{
                   "Content-Type":"application/x-www-form-urlencoded"

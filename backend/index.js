@@ -15,7 +15,10 @@ const connection=mysql.createConnection({
     host:process.env.DB_HOST,
     user:process.env.DB_USER,
     password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME
+    database:process.env.DB_NAME,
+    ssl: {
+    rejectUnauthorized: false
+  }
 });
 connection.connect((err)=>{
     if(err){
@@ -133,13 +136,8 @@ app.post("/deletePost",(req,res)=>{
     })
 })
 app.get("/",(req,res)=>{
-    console.log(req)
-    res.status(200).json({message:"successful"})
-})
-app.get("/diary",(req,res)=>{
     res.sendFile(path.join(__dirname,"../frontend/Registration.html"))
 })
-
 const PORT=process.env.PORT || 3000
 app.listen(PORT,()=>{
     console.log(`server started on port ${PORT} ...`)

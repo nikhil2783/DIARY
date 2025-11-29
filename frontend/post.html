@@ -32,7 +32,7 @@
         document.addEventListener("DOMContentLoaded",async()=>{
             if(postID){
                 try{
-                    const res=await fetch(`http://localhost:3000/getPost?id=${postID}`)
+                    const res=await fetch(`/getPost?id=${postID}`)
                     if(!res.ok){
                         console.error("Failed to fetch post for editing")
                         return;
@@ -52,12 +52,12 @@
             let url;
             const body = new URLSearchParams();
             if(postID){
-                url="http://localhost:3000/updatePost"
+                url="/updatePost"
                 body.append("postID",postID)
                 body.append("postTitle",postTitle)
                 body.append("postDescription",postDescription)
             }else{
-                url="http://localhost:3000/newPost"
+                url="/newPost"
                 body.append("userID",userID)
                 body.append("postTitle",postTitle)
                 body.append("postDescription",postDescription)
