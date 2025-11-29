@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express=require('express');
 const cors=require('cors');
 const bcrypt=require('bcrypt');
@@ -11,10 +12,10 @@ app.use(express.json())
 app.use(express.static(path.join(__dirname,"../frontend")))
 
 const connection=mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'root',
-    database:'myDiary'
+    host:process.env.DB_HOST,
+    user:process.env.DB_USER,
+    password:process.env.DB_PASSWORD,
+    database:process.env.DB_NAME
 });
 connection.connect((err)=>{
     if(err){
@@ -27,21 +28,21 @@ app.post("/registerUser",async(req,res)=>{
     const {email,password}=req.body
     try{
         const hashedPassword=await bcrypt.hash(password,10)
-        connection.query(`select count(EmailID) as count from Users where EmailID="${email}"`,(err,result)=>{
+        connection.query("select count(EmailID) as count from Users where EmailID=?",[email],(err,result)=>{
             if(err){
                 res.status(500).send('no')
                 return
             }
             if(result[0].count>0){
-                res.status(505).send("Email already registered")
+                res.status(409).send("Email already registered")
                 return
             }
-            connection.query(`insert into Users(EmailID,HashedPassword) values('${email}','${hashedPassword}')`,(err,results)=>{
+            connection.query("insert into Users(EmailID,HashedPassword) values(?,?)",[email,hashedPassword],(err,results)=>{
                 if(err){
                     res.status(500).send('no')
                     return
                 }
-                res.sendStatus('200')
+                res.sendStatus(200)
                 console.log("Successfully Registered")
             })
         })
@@ -54,7 +55,7 @@ app.post("/registerUser",async(req,res)=>{
 
 app.post("/userLogin",(req,res)=>{
     const {email,password}=req.body; 
-    connection.query(`select ID,HashedPassword from Users where EmailID='${email}'`,async(err,result)=>{
+    connection.query("select ID,HashedPassword from Users where EmailID=?",[email],async(err,result)=>{
         if(err){
             console.log(err)
             res.status(500).send('DB error')
@@ -76,9 +77,9 @@ app.post("/userLogin",(req,res)=>{
 })
 app.post("/newPost",async(req,res)=>{
     const {postTitle,postDescription,userID}=req.body;
-    connection.query(`insert into Posts(UserID,postTitle,postDescription) values(${userID},"${postTitle}","${postDescription}")`,async(err,result)=>{
+    connection.query("insert into Posts(UserID,postTitle,postDescription) values(?,?,?)",[userID,postTitle,postDescription],async(err,result)=>{
         if(err){
-            res.status(401).send("unable to post")
+            res.status(500).send("unable to post")
             console.log(err)
             return
         }
@@ -139,6 +140,7 @@ app.get("/diary",(req,res)=>{
     res.sendFile(path.join(__dirname,"../frontend/Registration.html"))
 })
 
-app.listen(3000,()=>{
-    console.log("server started on port 3000 ...")
-})
+const PORT=process.env.PORT || 3000
+app.listen(PORT,()=>{
+    console.log(`server started on port ${PORT} ...`)
+});
