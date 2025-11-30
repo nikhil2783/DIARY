@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="./feedPage.css" />
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
 </head>
-  <body >
-    <div class="text-end p-2">
-        <button class="btn btn-primary w-25" onclick="window.location.href='./post.html'">New Post</button>
-        <button class="btn btn-danger w-25" id="logoutBtn">Logout</button>    
+  <body class="bg-light min-vh-100 d-flex flex-column">
+    <header class="container py-2">
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='./post.html'">New Post</button>
+        <button class="btn btn-danger btn-sm" id="logoutBtn">Logout</button>    
       </div>
-    <div class="allPost" id="postContainer"></div>
+    </header>
+    <main class="container my-3 flex-grow-1">
+      <div class="allPost" id="postContainer"></div>
+    </main>
     <script>
       document.getElementById("logoutBtn").addEventListener("click",()=>{
         localStorage.removeItem('userID');
@@ -49,19 +53,21 @@
           }
           posts.forEach((post) => {
             const div=document.createElement("div")
-            div.className="Post"
+            div.className="Post mb-3"
 
             const fullDesc=post.postDescription || "";
             const words=fullDesc.trim().split(/\s+/);
             let preview=words.slice(0,30).join(' ');
             if(words.length>30) preview+=" ..."; 
             div.innerHTML=`
-            <h1>${post.postTitle}</h1>
-            <p>${preview}</p>
-            <a href="./dedicatedPage.html?id=${post.ID}" class="btn viewButton">View Post</a>
-            <button class="btn btn-secondary edit-btn" data-id="${post.ID}">Edit Post</button>
-            <button class="btn btn-danger delete-btn" data-id="${post.ID}">Delete Post</button>
-            `;
+            <h2 class="h5 mb-2">${post.postTitle}</h2>
+            <p class="mb-3">${preview}</p>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="./dedicatedPage.html?id=${post.ID}" class="btn btn-sm btn-outline-primary viewButton">View Post</a>
+              <button class="btn btn-sm btn-secondary edit-btn" data-id="${post.ID}">Edit Post</button>
+              <button class="btn btn-sm btn-danger delete-btn" data-id="${post.ID}">Delete Post</button>
+            </div>
+              `;
             container.appendChild(div)
           });
           container.addEventListener("click",async(e)=>{
