@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname,"../frontend")))
 
 const connection=mysql.createConnection({
     host:process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user:process.env.DB_USER,
     password:process.env.DB_PASSWORD,
     database:process.env.DB_NAME,
@@ -22,7 +23,7 @@ const connection=mysql.createConnection({
 });
 connection.connect((err)=>{
     if(err){
-        console.log("Error in connecting Database")
+        console.log("Error in connecting Database",err)
         return
     }
     console.log("Successfully connected to Database")
@@ -33,7 +34,8 @@ app.post("/registerUser",async(req,res)=>{
         const hashedPassword=await bcrypt.hash(password,10)
         connection.query("select count(EmailID) as count from Users where EmailID=?",[email],(err,result)=>{
             if(err){
-                res.status(500).send('no')
+                res.status(500).send("Unable to register")
+                console.log(err)
                 return
             }
             if(result[0].count>0){
@@ -42,7 +44,8 @@ app.post("/registerUser",async(req,res)=>{
             }
             connection.query("insert into Users(EmailID,HashedPassword) values(?,?)",[email,hashedPassword],(err,results)=>{
                 if(err){
-                    res.status(500).send('no')
+                    res.status(500).send('Unable to register')
+                    console.log(err)
                     return
                 }
                 res.sendStatus(200)
@@ -65,7 +68,7 @@ app.post("/userLogin",(req,res)=>{
             return
         }
         if (result.length === 0) {
-            return res.status(401).send("Invalid email or password");
+            return res.status(401).send("Invalid email");
         }
         const hashedPassword=result[0].HashedPassword
         const userID=result[0].ID;
